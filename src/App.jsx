@@ -51,7 +51,7 @@ function App() {
 
   return (
     <>
-      <div className='mx-auto col-md-9 col-sm-12 text-center'>
+      <div className='mx-auto col-md-9 col-sm-11 text-center'>
         <h1>4 in line</h1>
         <div className='position-container' style={{ 'gridTemplateColumns': `repeat(${cols}, 1fr)` }}>
           {positions.map((state, i) =>
