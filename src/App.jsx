@@ -3,7 +3,7 @@ import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useState } from 'react';
 import { WinnerModal } from './components/WinnerModal';
-import { rows, cols, players, colors } from './constants'
+import { rows, cols, players, colors, symbols } from './constants'
 import { checkWinner } from './logic/utils'
 import { Position } from './components/Position';
 
@@ -51,17 +51,17 @@ function App() {
 
   return (
     <>
-      <div className='mx-auto col-md-9 col-sm-11 text-center'>
+      <div className='mx-auto col-md-5 col-sm-11 text-center'>
         <h1>4 in line</h1>
         <div className='position-container' style={{ 'gridTemplateColumns': `repeat(${cols}, 1fr)` }}>
           {positions.map((state, i) =>
             <Position
               key={i}
-              children={positions[i]}
+              children={symbols[positions[i]]}
               row={Math.floor(i / cols)}
               col={i % rows}
               command={pressPosition}
-              color = { colors[positions[i]] }
+              color={colors[positions[i]]}
             />)
           }
         </div>

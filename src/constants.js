@@ -8,5 +8,9 @@ const colors = {
   X: "red",
   O: "blue"
 }
+const symbols = {
+  X: "X",
+  O: "O"
+}
 
-export { rows, cols, players, colors };
+export { rows, cols, players, colors, symbols };
