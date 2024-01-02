@@ -2,139 +2,16 @@ import './App.css'
 // import bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useState } from 'react';
-import { useEffect } from 'react';
-
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-
-const rows = 6;
-const cols = 6;
-const players = {
-  X: "X",
-  O: "O"
-}
-
-function WinnerModal({ winner, commandClose }) {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => {commandClose() ; setShow(false)};
-  const handleShow = () => setShow(true);
-
-  useEffect(() => {
-    if (winner) {
-      handleShow()
-    }
-  }
-    , [winner])
-
-  return (
-    <>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title className='text-center'>{winner + ' won'}</Modal.Title>
-        </Modal.Header>
-        {/* <Modal.Body>{'press Close to restart'}</Modal.Body> */}
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
-}
-
-function checkWinner(player, positions) {
-  // check row
-  for (let i = 0; i < positions.length; i += cols) {
-    let count = 0
-    for (let j = 0; j < cols; j++) {
-      if (positions[i + j] === player) {
-        count++
-      } else {
-        count = 0
-      }
-      if (count === 4) {
-        return true
-      }
-    }
-  }
-  // check col
-  for (let i = 0; i < cols; i++) {
-    let count = 0
-    for (let j = 0; j < positions.length; j += cols) {
-      if (positions[i + j] === player) {
-        count++
-      } else {
-        count = 0
-      }
-      if (count === 4) {
-        return true
-      }
-    }
-  }
-  // check diagonal
-  for (let i = 0; i < positions.length; i += cols) {
-    for (let j = 0; j < cols; j++) {
-      if (positions[i + j] === player) {
-        let count = 1
-        let k = 1
-        while (i + j + k * cols < positions.length && j + k < cols) {
-          if (positions[i + j + k * cols] === player) {
-            count++
-          } else {
-            break
-          }
-          if (count === 4) {
-            return true
-          }
-          k++
-        }
-      }
-    }
-  }
-  // check anti-diagonal
-  for (let i = 0; i < positions.length; i += cols) {
-    for (let j = 0; j < cols; j++) {
-      if (positions[i + j] === player) {
-        let count = 1
-        let k = 1
-        while (i + j - k * cols >= 0 && j + k < cols) {
-          if (positions[i + j - k * cols] === player) {
-            count++
-          } else {
-            break
-          }
-          if (count === 4) {
-            return true
-          }
-          k++
-        }
-      }
-    }
-  }
-  return false
-}
-
-function Position({ children, row, col, command }) {
-  return (
-    <div className="position" onClick={() => { command(row, col) }}>
-      {children}
-    </div>
-  )
-}
-
+import { WinnerModal } from './components/WinnerModal';
+import { rows, cols, players, colors } from './constants'
+import { checkWinner } from './logic/utils'
+import { Position } from './components/Position';
 
 function App() {
   // states
   const [player, setPlayer] = useState(players.X)
   const [positions, setPositions] = useState(Array(rows * cols).fill(null))
   const [winner, setWinner] = useState(null)
-
-  // effects
-  useEffect(() => {
-    console.log('postion changed')
-  }, [positions])
 
   //functions
   const pressPosition = (row, col) => {
@@ -144,7 +21,6 @@ function App() {
   const update = (row, col, player, setPlayer) => {
     const newPositions = [...positions]
     if (winner) { return }
-    console.log(row, col, player)
     var validMove = false
     // update position
     const position = newPositions[row * cols + col]
@@ -156,7 +32,6 @@ function App() {
         break
       }
     }
-    console.log(colArray)
     // check if win
     if (checkWinner(player, newPositions)) {
       // modal
@@ -172,7 +47,6 @@ function App() {
   const reset = () => {
     setPositions(Array(rows * cols).fill(null))
     setWinner(null)
-    console.log('reset')
   }
 
   return (
@@ -187,6 +61,7 @@ function App() {
               row={Math.floor(i / cols)}
               col={i % rows}
               command={pressPosition}
+              color = { colors[positions[i]] }
             />)
           }
         </div>
